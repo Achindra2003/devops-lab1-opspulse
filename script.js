@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const latencyTrend = document.getElementById('latencyTrend');
   const uptimeVal = document.getElementById('uptimeVal');
   const errorBudgetVal = document.getElementById('errorBudgetVal');
+  const throughputVal = document.getElementById('throughputVal');
   const activeBranch = document.getElementById('activeBranch');
   const activeCommit = document.getElementById('activeCommit');
   const refreshBtn = document.getElementById('refreshBtn');
@@ -89,6 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
         latencyTrend.className = 'metric-trend trend-good';
         latencyTrend.textContent = `↓ ${avg}ms`;
       }
+    }
+
+    // Update dynamic throughput reading
+    if (throughputVal) {
+      const tp = (4.0 + (Math.random() * 0.8)).toFixed(1);
+      throughputVal.textContent = `${tp} Gbps`;
     }
 
     // Refresh Alert Banner according to fleet health

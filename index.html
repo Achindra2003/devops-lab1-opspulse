@@ -38,9 +38,10 @@
     </header>
 
     <!-- System Alert / Notification Banner -->
-    <div class="alert-banner alert-normal" id="systemAlertBanner">
-      <span class="alert-badge">SYSTEM STATUS</span>
-      <span class="alert-text" id="alertText">All systems operational across clusters [us-east-1, eu-west-1, ap-south-1]. Automated health checks passing.</span>
+    <!-- System Alert / Notification Banner (Synthesized Conflict Resolution) -->
+    <div class="alert-banner alert-warning" id="systemAlertBanner">
+      <span class="alert-badge">MAINTENANCE &amp; FAILOVER NOTICE</span>
+      <span class="alert-text" id="alertText">Scheduled US-East maintenance in progress. High latency detected on EU-Central Gateway (&gt;350ms); automated traffic failover active.</span>
     </div>
 
     <!-- Main Dashboard Grid -->
@@ -81,6 +82,15 @@
           </div>
           <div class="metric-value" id="errorBudgetVal">94.2%</div>
           <div class="metric-subtext">0.058% burn rate (Healthy)</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Network Egress / Ingress</span>
+            <span class="metric-trend trend-good" id="throughputTrend">↑ 4.2 Gbps</span>
+          </div>
+          <div class="metric-value" id="throughputVal">4.2 Gbps</div>
+          <div class="metric-subtext">Peak egress: 5.8 Gbps (Nominal)</div>
         </div>
       </section>
 
