@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpsPulse — Cloud Native DevOps Telemetry &amp; Deployment Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Navigation Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="pulse-indicator"></div>
+        <span class="brand-title">OpsPulse</span>
+        <span class="brand-tag">v1.1.0-prod</span>
+      </div>
+
+      <div class="header-center">
+        <div class="env-selector">
+          <button class="env-btn active" data-env="production">Production</button>
+          <button class="env-btn" data-env="staging">Staging</button>
+          <button class="env-btn" data-env="development">Development</button>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="git-status-badge">
+          <span class="git-icon">⎇</span>
+          <span class="git-branch" id="activeBranch">main</span>
+          <span class="git-hash" id="activeCommit">#7f4a023</span>
+        </div>
+        <button class="btn-refresh" id="refreshBtn" title="Sync Telemetry">↻ Sync</button>
+      </div>
+    </header>
+
+    <!-- System Alert / Notification Banner -->
+    <div class="alert-banner alert-normal" id="systemAlertBanner">
+      <span class="alert-badge">SYSTEM STATUS</span>
+      <span class="alert-text" id="alertText">All systems operational across clusters [us-east-1, eu-west-1, ap-south-1]. Automated health checks passing.</span>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <main class="dashboard-grid">
+      <!-- Top Metrics Overview Row -->
+      <section class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">System Uptime</span>
+            <span class="metric-trend trend-up">↑ 99.98%</span>
+          </div>
+          <div class="metric-value" id="uptimeVal">99.98%</div>
+          <div class="metric-subtext">Rolling 30-day SLA window</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Avg Cluster Latency</span>
+            <span class="metric-trend trend-good" id="latencyTrend">↓ 24ms</span>
+          </div>
+          <div class="metric-value" id="latencyVal">28 ms</div>
+          <div class="metric-subtext">P95: 42ms | P99: 89ms</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Active Deployments</span>
+            <span class="metric-trend trend-neutral">3 Running</span>
+          </div>
+          <div class="metric-value" id="deploymentsVal">14 / 14</div>
+          <div class="metric-subtext">Zero deployment failures today</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Error Budget</span>
+            <span class="metric-trend trend-up" id="errorBudgetTrend">94.2%</span>
+          </div>
+          <div class="metric-value" id="errorBudgetVal">94.2%</div>
+          <div class="metric-subtext">0.058% burn rate (Healthy)</div>
+        </div>
+      </section>
+
+      <!-- Main Layout: Microservice Health + Pipeline Tracker -->
+      <div class="content-split">
+        <!-- Left Column: Microservice Health Matrix -->
+        <section class="card service-matrix-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Microservice Fleet Health</h2>
+              <p class="card-subtitle">Real-time status across Kubernetes pods &amp; managed cloud services</p>
+            </div>
+            <div class="fleet-actions">
+              <button class="btn-sm" id="simulateLoadBtn">Simulate Load Spike</button>
+            </div>
+          </div>
+
+          <div class="service-table-container">
+            <table class="service-table">
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>Cluster</th>
+                  <th>Latency</th>
+                  <th>Replicas</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="serviceTableBody">
+                <tr data-service="api-gateway">
+                  <td class="service-name-cell">
+                    <span class="service-icon">🌐</span>
+                    <div>
+                      <strong>API Gateway (Kong)</strong>
+                      <span class="service-sub">Ingress / Reverse Proxy</span>
+                    </div>
+                  </td>
+                  <td><code>us-east-1</code></td>
+                  <td><span class="latency-cell" id="lat-gateway">18 ms</span></td>
+                  <td>6 / 6 pods</td>
+                  <td><span class="status-pill status-healthy" id="stat-gateway">Healthy</span></td>
+                  <td><button class="btn-xs toggle-service-btn" data-target="gateway">Toggle</button></td>
+                </tr>
+
+                <tr data-service="auth-service">
+                  <td class="service-name-cell">
+                    <span class="service-icon">🔐</span>
+                    <div>
+                      <strong>Auth &amp; IAM Service</strong>
+                      <span class="service-sub">JWT / OAuth2 token provider</span>
+                    </div>
+                  </td>
+                  <td><code>us-east-1</code></td>
+                  <td><span class="latency-cell" id="lat-auth">32 ms</span></td>
+                  <td>4 / 4 pods</td>
+                  <td><span class="status-pill status-healthy" id="stat-auth">Healthy</span></td>
+                  <td><button class="btn-xs toggle-service-btn" data-target="auth">Toggle</button></td>
+                </tr>
+
+                <tr data-service="db-primary">
+                  <td class="service-name-cell">
+                    <span class="service-icon">🗄️</span>
+                    <div>
+                      <strong>PostgreSQL Primary</strong>
+                      <span class="service-sub">Multi-AZ Stateful cluster</span>
+                    </div>
+                  </td>
+                  <td><code>ap-south-1</code></td>
+                  <td><span class="latency-cell" id="lat-db">12 ms</span></td>
+                  <td>Leader + 2 Standby</td>
+                  <td><span class="status-pill status-healthy" id="stat-db">Healthy</span></td>
+                  <td><button class="btn-xs toggle-service-btn" data-target="db">Toggle</button></td>
+                </tr>
+
+                <tr data-service="worker-queue">
+                  <td class="service-name-cell">
+                    <span class="service-icon">⚡</span>
+                    <div>
+                      <strong>Worker Async Queue</strong>
+                      <span class="service-sub">RabbitMQ message consumers</span>
+                    </div>
+                  </td>
+                  <td><code>eu-west-1</code></td>
+                  <td><span class="latency-cell" id="lat-worker">45 ms</span></td>
+                  <td>12 / 12 workers</td>
+                  <td><span class="status-pill status-healthy" id="stat-worker">Healthy</span></td>
+                  <td><button class="btn-xs toggle-service-btn" data-target="worker">Toggle</button></td>
+                </tr>
+
+                <tr data-service="cache-cluster">
+                  <td class="service-name-cell">
+                    <span class="service-icon">📦</span>
+                    <div>
+                      <strong>Redis Cache Cluster</strong>
+                      <span class="service-sub">In-memory key/value cluster</span>
+                    </div>
+                  </td>
+                  <td><code>us-east-1</code></td>
+                  <td><span class="latency-cell" id="lat-cache">3 ms</span></td>
+                  <td>3 Nodes</td>
+                  <td><span class="status-pill status-healthy" id="stat-cache">Healthy</span></td>
+                  <td><button class="btn-xs toggle-service-btn" data-target="cache">Toggle</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Right Column: CI/CD Pipeline & Deployment Feed -->
+        <aside class="right-stack">
+          <!-- CI/CD Deployment Visualizer -->
+          <section class="card pipeline-card">
+            <div class="card-header">
+              <h2 class="card-title">CI/CD Deployment Pipeline</h2>
+              <span class="badge-status-running" id="pipelineStatus">Passing</span>
+            </div>
+            <div class="pipeline-stages">
+              <div class="stage-step step-complete">
+                <div class="step-circle">✓</div>
+                <div class="step-label">Lint &amp; Audit</div>
+              </div>
+              <div class="stage-connector connector-complete"></div>
+              <div class="stage-step step-complete">
+                <div class="step-circle">✓</div>
+                <div class="step-label">Automated Tests</div>
+              </div>
+              <div class="stage-connector connector-complete"></div>
+              <div class="stage-step step-complete">
+                <div class="step-circle">✓</div>
+                <div class="step-label">Build Container</div>
+              </div>
+              <div class="stage-connector connector-complete"></div>
+              <div class="stage-step step-active">
+                <div class="step-circle">🚀</div>
+                <div class="step-label">Prod Deploy</div>
+              </div>
+            </div>
+
+            <div class="pipeline-meta">
+              <div><strong>Trigger:</strong> Push to <code>main</code> (PR #4)</div>
+              <div><strong>Commit:</strong> <code>#7f4a023</code> — "feat(pipeline): automated telemetry"</div>
+              <div><strong>Duration:</strong> 1m 42s</div>
+            </div>
+
+            <div class="pipeline-actions">
+              <button class="btn-primary" id="triggerDeployBtn">Trigger Rollout Simulation</button>
+            </div>
+          </section>
+
+          <!-- Incident & Merge Resolution Log -->
+          <section class="card incident-card">
+            <div class="card-header">
+              <h2 class="card-title">Git &amp; Incident Audit Trail</h2>
+              <span class="audit-counter">4 Events</span>
+            </div>
+            <div class="timeline" id="auditTimeline">
+              <div class="timeline-item">
+                <div class="timeline-dot dot-purple"></div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <strong>PR #5 Merged: Conflict Resolved</strong>
+                    <span class="time">Just now</span>
+                  </div>
+                  <p>Resolved heading &amp; alert banner conflict between <code>feature/incident-logger</code> and <code>feature/alert-banner</code>.</p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot dot-green"></div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <strong>Release v1.1.0 Tagged</strong>
+                    <span class="time">12m ago</span>
+                  </div>
+                  <p>Production release tagged and deployed via automated semantic versioning workflow.</p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot dot-blue"></div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <strong>Branch feature/telemetry Merged</strong>
+                    <span class="time">45m ago</span>
+                  </div>
+                  <p>Integrated CPU &amp; error-budget dials into develop branch via PR #2.</p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot dot-gray"></div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <strong>Repository Initialized</strong>
+                    <span class="time">2h ago</span>
+                  </div>
+                  <p>Base architecture pushed with GitFlow branching rules &amp; Git hooks enabled.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Footer with Team & Lab Attribution -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <strong>DevOps Lab 1: Collaborative Git Workflows &amp; Telemetry</strong> — 4MCA Trimester 5
+      </div>
+      <div class="footer-team">
+        <span>Team: <strong>Achindra Sharma (2547105)</strong>, <strong>Nayana Benny (2547136)</strong>, <strong>Joshua Joby (2547125)</strong></span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+# OpsPulse Pre-commit Hook: Syntax validation & conflict marker blocker
+echo "[pre-commit] Inspecting staged files for merge conflict markers and formatting..."
+
+# Check for lingering git conflict markers in staged code files (excluding documentation)
+CONFLICT_MARKERS=$(git diff --cached -U0 -- ':(exclude)*.md' | grep -E "^(\+<<<<<<<|\+=======|\+>>>>>>>)" || true)
+if [ -n "$CONFLICT_MARKERS" ]; then
+  echo "[pre-commit ERROR] Staged changes contain unresolved merge conflict markers:" >&2
+  echo "$CONFLICT_MARKERS" >&2
+  echo "Please resolve all conflict markers before committing." >&2
+  exit 1
+fi
+
+echo "[pre-commit] Check passed: No conflict markers found in staged files."
+exit 0

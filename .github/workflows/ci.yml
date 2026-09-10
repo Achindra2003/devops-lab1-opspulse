@@ -1,0 +1,56 @@
+name: OpsPulse CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  validate-and-lint:
+    name: Code Quality & Syntax Auditing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate JavaScript Syntax
+        run: |
+          echo "Running JavaScript syntax validation via Node.js..."
+          node --check script.js
+          echo "JavaScript syntax check passed."
+
+      - name: Audit HTML Structure & Conflict Markers
+        run: |
+          echo "Checking HTML structure for unresolved conflict markers..."
+          if grep -E "^(<<<<<<<|=======|>>>>>>>)" index.html; then
+            echo "ERROR: Unresolved Git conflict markers found in index.html!"
+            exit 1
+          fi
+          echo "HTML audit passed."
+
+      - name: Verify Conventional Commits on PR
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Checking PR Title against Conventional Commits pattern..."
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PATTERN="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9_-]+\))?: .+"
+          if echo "$PR_TITLE" | grep -qE "$PATTERN"; then
+            echo "PR Title matches Conventional Commits: $PR_TITLE"
+          else
+            echo "PR Title '$PR_TITLE' does not follow Conventional Commits pattern."
+            echo "Expected format: <type>(scope): description"
+            exit 1
+          fi
+
+      - name: Build & Deployment Simulation
+        run: |
+          echo "Simulating zero-downtime deployment package..."
+          mkdir -p dist
+          cp index.html style.css script.js dist/
+          echo "Artifacts generated successfully in dist/ folder."
