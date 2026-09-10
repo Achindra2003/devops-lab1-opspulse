@@ -5,25 +5,26 @@
 ![Branching](https://img.shields.io/badge/branching-GitFlow-purple.svg)
 ![Status](https://img.shields.io/badge/status-production--ready-success.svg)
 
-> **DevOps Lab 1:** Collaborative Git Workflow, Branching Strategies, Merge Conflicts, Pull Requests, and Repository Governance.  
+> **DevOps Lab 1:** Git Configuration, Branching Strategies, Merge Conflicts, Pull Requests, and Repository Governance.  
 > **Course:** MCA Trimester 5 — DevOps Lab  
+> **Submission Type:** Individual Lab Submission  
+> **Student:** Achindra Sharma (2547105) — 4MCA A  
 > **Repository:** [github.com/Achindra2003/devops-lab1-opspulse](https://github.com/Achindra2003/devops-lab1-opspulse)
 
 ---
 
-## Team & Roles
+## Student Information
 
-| Contributor | Reg Number | Role | Core Responsibilities |
-| :--- | :--- | :--- | :--- |
-| **Achindra Sharma** | 2547105 | **Team Lead / DevOps Engineer** | Repository creation, GitFlow branching strategy, Git hooks, CI/CD pipeline, branch protection, PR review & merge coordination |
-| **Nayana Benny** | 2547136 | **UI / Frontend Engineer** | Dashboard layout, dark-mode design system, glassmorphism cards, responsive tables, and feature/alert-banner branch |
-| **Joshua Joby** | 2547125 | **Telemetry / JavaScript Engineer** | Live telemetry engine, jitter simulation, latency calculations, incident logger, and conflict resolution |
+- **Name:** Achindra Sharma
+- **Register Number:** 2547105
+- **Class / Section:** 4MCA A
+- **Course:** MCA Trimester 5 — DevOps Lab (Lab 1)
 
 ---
 
 ## Project Overview
 
-We built **OpsPulse** as a high-fidelity DevOps telemetry and deployment dashboard. Unlike toy static pages with dummy placeholders, OpsPulse provides a real DevOps tool interface:
+I built **OpsPulse** as a practical DevOps telemetry and deployment dashboard. Rather than using an arbitrary placeholder web page, OpsPulse simulates an actual cloud operations center:
 - **Fleet Health Monitoring:** Real-time simulated latency and status tracking across 5 core microservices (API Gateway, Auth & IAM, PostgreSQL Primary, Worker Queue, and Redis Cache).
 - **Interactive Cluster Controls:** Failover toggle buttons, traffic surge injection, and live environment switching between `production`, `staging`, and `development`.
 - **Deployment Pipeline Visualizer:** Visual representation of automated CI/CD stages (Lint & Audit $\rightarrow$ Automated Tests $\rightarrow$ Build Container $\rightarrow$ Production Deploy).
@@ -35,7 +36,7 @@ Built with semantic HTML5, CSS3, and modern Vanilla JavaScript — zero external
 
 ## Git Branching Strategy (GitFlow)
 
-We adopted a structured **GitFlow** branching strategy to ensure production stability while enabling parallel development across team members. Direct commits to `main` and `develop` were prohibited once initialized.
+I adopted a structured **GitFlow** branching model to maintain production stability while simulating isolated feature development. Direct commits to `main` and `develop` were prohibited once initialized.
 
 ```mermaid
 gitGraph
@@ -88,25 +89,25 @@ gitGraph
 
 ## Deliberate Merge Conflict & Resolution
 
-To demonstrate real-world conflict handling, we engineered an intentional merge conflict on the system alert component in `index.html`.
+To demonstrate real-world conflict handling, I engineered an intentional merge conflict on the system alert component in `index.html` by creating two concurrent feature branches off the same commit.
 
 ### The Cause
-1. Nayana branched `feature/alert-banner` from `develop` and updated the alert banner to a high-priority latency warning:
+1. I created branch `feature/alert-banner` from `develop` and updated the alert banner to a critical latency failover warning:
    ```html
    <div class="alert-banner alert-danger" id="systemAlertBanner">
      <span class="alert-badge">CRITICAL ALERT</span>
      <span class="alert-text">High latency detected on EU-Central Gateway (>350ms). Failover active.</span>
    </div>
    ```
-2. Concurrently, Joshua branched `feature/incident-logger` from the **exact same commit** on `develop`, changing the banner to a scheduled maintenance advisory:
+2. Concurrently, I created branch `feature/incident-logger` from the **exact same commit** on `develop` (`dad356f`), changing the banner to a scheduled database maintenance advisory:
    ```html
    <div class="alert-banner alert-warning" id="systemAlertBanner">
      <span class="alert-badge">MAINTENANCE</span>
      <span class="alert-text">Scheduled maintenance in progress for US-East database cluster.</span>
    </div>
    ```
-3. Nayana's PR for `feature/alert-banner` was reviewed and merged into `develop` first.
-4. When Joshua attempted to merge `develop` into `feature/incident-logger`, Git halted and flagged the conflict:
+3. I merged `feature/alert-banner` into `develop` first via PR #2.
+4. When I switched back to `feature/incident-logger` and attempted to merge updated `develop`, Git halted and flagged the collision:
    ```
    Auto-merging index.html
    CONFLICT (content): Merge conflict in index.html
@@ -129,7 +130,7 @@ To demonstrate real-world conflict handling, we engineered an intentional merge 
 ```
 
 ### Resolution Strategy
-Rather than discarding either change, we synthesized both into an adaptive status banner and logged both alerts in the incident trail:
+Rather than discarding either change, I synthesized both into an adaptive status banner and logged both alerts in the incident trail:
 1. Removed conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`).
 2. Set the default banner state to operational, and wired dynamic status handling into `script.js` so both maintenance warnings and latency alerts display based on live service conditions.
 3. Staged the file and finalized the merge commit:
