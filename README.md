@@ -1,6 +1,7 @@
 # OpsPulse — Cloud Native DevOps Telemetry & Deployment Portal
 
 [![OpsPulse CI Pipeline](https://github.com/Achindra2003/devops-lab1-opspulse/actions/workflows/ci.yml/badge.svg)](https://github.com/Achindra2003/devops-lab1-opspulse/actions)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployment%20Live-black?logo=vercel)](https://opspulse-devops-lab1.vercel.app)
 ![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)
 ![Branching](https://img.shields.io/badge/branching-GitFlow-purple.svg)
 ![Status](https://img.shields.io/badge/status-production--ready-success.svg)
@@ -9,6 +10,7 @@
 > **Course:** MCA Trimester 5 — DevOps Lab  
 > **Submission Type:** Individual Lab Submission  
 > **Student:** Achindra Sharma (2547105) — 4MCA A  
+> **Live Production (Vercel):** [https://opspulse-devops-lab1.vercel.app](https://opspulse-devops-lab1.vercel.app)  
 > **Repository:** [github.com/Achindra2003/devops-lab1-opspulse](https://github.com/Achindra2003/devops-lab1-opspulse)
 
 ---
