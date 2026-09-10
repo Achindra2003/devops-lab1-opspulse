@@ -1,18 +1,19 @@
 # OpsPulse Code Ownership Map
-# DevOps Lab 1 Governance Model
+# DevOps Lab 1 — Individual Submission
+# Student: Achindra Sharma (2547105) — 4MCA A
 
-# Default owner for entire repository
+# Repository Maintainer
 * @Achindra2003
 
-# Core UI & Styling (UI Developer: Nayana Benny - 2547136)
+# Core UI & Design System
 style.css @Achindra2003
 
-# Core Application Logic & Telemetry Engine (JavaScript Developer: Joshua Joby - 2547125)
+# Telemetry Engine & JavaScript Logic
 script.js @Achindra2003
 
-# Shared Semantic Markup (Collaborative across all 3 developers)
+# Semantic Markup & Dashboard Structure
 index.html @Achindra2003
 
-# CI/CD Workflows, Git Hooks & DevOps Config (Team Lead / DevOps: Achindra Sharma - 2547105)
+# CI/CD Workflows, Git Hooks & DevOps Configuration
 .github/ @Achindra2003
 .githooks/ @Achindra2003
