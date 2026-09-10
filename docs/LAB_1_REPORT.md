@@ -6,20 +6,24 @@
 **Register Number:** 2547105  
 **Class / Section:** 4MCA A  
 **Application:** OpsPulse — Cloud Native DevOps Telemetry & Deployment Portal  
-**Repository:** [github.com/Achindra2003/devops-lab1-opspulse](https://github.com/Achindra2003/devops-lab1-opspulse)  
+**Live Production URL (Vercel):** [https://opspulse-devops-lab1.vercel.app](https://opspulse-devops-lab1.vercel.app)  
+**GitHub Repository:** [https://github.com/Achindra2003/devops-lab1-opspulse](https://github.com/Achindra2003/devops-lab1-opspulse)  
 
 ---
 
-## 1. Project Background & What I Built
+## 1. Project Background & Live Deployment
 
-Instead of building a trivial toy page with hardcoded placeholder labels, I decided to build something directly relevant to our DevOps curriculum: **OpsPulse**, a browser-based telemetry and deployment dashboard.
+Instead of building a trivial toy page with hardcoded placeholder labels, I built something directly relevant to our DevOps curriculum: **OpsPulse**, a browser-based telemetry and deployment dashboard.
 
-The application runs entirely on static HTML5, CSS3, and modern Vanilla JavaScript without compilation steps or third-party node packages. It models what an infrastructure engineer monitors during an on-call shift:
-1. **Fleet Health Table:** Tracks five core services (API Gateway, Auth & IAM, Postgres Primary, Worker Queue, and Redis Cache) with latency, pod replicas, and health badges.
+The application is deployed live on **Vercel** with continuous deployment linked to my GitHub repository. It runs entirely on static HTML5, CSS3, and modern Vanilla JavaScript without compilation steps or heavy third-party node packages. It models what an infrastructure engineer monitors during an on-call shift:
+1. **Fleet Health Table:** Tracks five core services (API Gateway, Auth & IAM, Postgres Primary, Worker Queue, and Redis Cache) with real-time simulated latency, pod replicas, and health status pills.
 2. **Interactive Traffic Spike Simulator:** Simulates load bursts, temporarily degrading latency and forcing auto-scaling responses.
 3. **Multi-Environment Context:** Allows toggling between `production`, `staging`, and `development`, dynamically changing the reported branch, commit hash, and uptime SLA.
-4. **CI/CD Pipeline Stages:** Visually illustrates the automated delivery pipeline (Lint & Audit $\rightarrow$ Automated Tests $\rightarrow$ Build Container $\rightarrow$ Production Deploy).
+4. **CI/CD Pipeline Stages:** Visually illustrates the automated delivery pipeline (*Lint & Audit $\rightarrow$ Automated Tests $\rightarrow$ Build Container $\rightarrow$ Production Deploy*).
 5. **Git & Incident Audit Stream:** Automatically logs environment transitions, maintenance notices, and pull request deployments.
+
+![Evidence 1: Live Vercel Production Deployment](screenshots/01-live-vercel-deployment.png)
+*Figure 1: OpsPulse deployed live on Vercel at `https://opspulse-devops-lab1.vercel.app`.*
 
 ---
 
@@ -42,11 +46,17 @@ I also configured repository-level options specifically for this project:
   git config alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
   ```
 
+![Evidence 2: Local Git Configuration & Status](screenshots/02-git-config-status.png)
+*Figure 2: Verified local and global Git configuration via PowerShell.*
+
 ### Remote Repository Configuration
-I provisioned the public repository directly through GitHub CLI:
+I provisioned the public repository directly through the GitHub CLI:
 ```bash
 gh repo create Achindra2003/devops-lab1-opspulse --public --source=. --remote=origin --push
 ```
+
+![Evidence 3: GitHub Repository Provisioning & Tags](screenshots/03-github-repo-overview.png)
+*Figure 3: GitHub repository overview showing `main` and `develop` branches and release tags.*
 
 ---
 
@@ -80,7 +90,7 @@ I used the **GitFlow** branching strategy because it provides clear boundaries b
 
 ## 4. Pull Requests Summary
 
-I opened and merged six formal Pull Requests through GitHub:
+I opened and merged seven formal Pull Requests through GitHub:
 
 | PR # | Source Branch | Target Branch | Title | Merge Strategy | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -90,6 +100,10 @@ I opened and merged six formal Pull Requests through GitHub:
 | **#4** | `develop` | `main` | `chore(release): merge develop into main for v1.1.0 release` | Non-Fast-Forward (`--no-ff`) | Merged (Tagged `v1.1.0`) |
 | **#5** | `hotfix/latency-threshold` | `main` | `fix(telemetry): guard rolling latency average against zero division and decimal jitter` | Non-Fast-Forward (`--no-ff`) | Merged |
 | **#6** | `develop` | `main` | `docs: add lab 1 report and changelog to main` | Non-Fast-Forward (`--no-ff`) | Merged |
+| **#7** | `develop` | `main` | `docs: update lab 1 deliverables for individual submission` | Non-Fast-Forward (`--no-ff`) | Merged |
+
+![Evidence 4: Closed Pull Requests Table on GitHub](screenshots/04-pull-requests-list.png)
+*Figure 4: Closed Pull Requests list on GitHub showing all merged feature, hotfix, and release PRs.*
 
 ---
 
@@ -127,13 +141,16 @@ Meanwhile, in `feature/incident-logger`, the exact same lines were modified to:
 
 ### Step 3: Triggering the Conflict
 1. I merged `feature/alert-banner` into `develop` via PR #2.
-2. When I switched to `feature/incident-logger` and ran `git merge develop`, Git halted and flagged the conflict:
+2. When I switched to `feature/incident-logger` and ran `git merge develop`, Git halted and flagged the collision:
 ```
 Auto-merging index.html
 CONFLICT (content): Merge conflict in index.html
 Automatic merge failed; fix conflicts and then commit the result.
 Recorded preimage for 'index.html'
 ```
+
+![Evidence 5: Merge Conflict Collision Encountered](screenshots/05-merge-conflict-collision.png)
+*Figure 5: Git collision triggered when merging `develop` into `feature/incident-logger`.*
 
 ### Step 4: Inspecting Conflict Markers
 Running `git diff index.html` showed the standard conflict delimiters:
@@ -149,6 +166,9 @@ Running `git diff index.html` showed the standard conflict delimiters:
 >>>>>>> develop
 ```
 
+![Evidence 6: Conflict Markers in Code Editor](screenshots/06-conflict-markers-editor.png)
+*Figure 6: Conflicting lines in `index.html` with `<<<<<<< HEAD`, `=======`, and `>>>>>>> develop` markers.*
+
 ### Step 5: Testing the Pre-Commit Safety Hook
 I deliberately attempted to commit `index.html` before removing the conflict markers to test my `.githooks/pre-commit` hook. The hook immediately aborted the commit:
 ```
@@ -159,6 +179,9 @@ I deliberately attempted to commit `index.html` before removing the conflict mar
 +>>>>>>> develop
 Please resolve all conflict markers before committing.
 ```
+
+![Evidence 7: Pre-Commit Hook Blocker](screenshots/07-precommit-hook-blocker.png)
+*Figure 7: Pre-commit hook blocking an accidental commit containing raw conflict markers.*
 
 ### Step 6: Resolving and Finalizing
 I resolved the conflict by synthesizing both updates into a unified adaptive alert banner:
@@ -177,6 +200,9 @@ git push origin feature/incident-logger
 ```
 Because `rerere` was enabled, Git logged: `Recorded resolution for 'index.html'`. PR #3 was now clean and merged into `develop`.
 
+![Evidence 8: Conflict Resolved & Merged PR #3](screenshots/08-conflict-resolved-merged-pr.png)
+*Figure 8: Clean resolved code and PR #3 successfully merged with a purple badge on GitHub.*
+
 ---
 
 ## 6. Beyond the Baseline: Advanced Git Practices
@@ -186,12 +212,7 @@ I went beyond the baseline requirements by implementing tooling and workflows us
 ### 1. Client-Side Git Hooks (`.githooks/`)
 I configured Git to use tracked hooks inside `.githooks/`:
 - **`pre-commit`**: Scans all staged code files before every commit. Blocks commits containing unresolved conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`).
-- **`commit-msg`**: Validates commit messages against the **Conventional Commits** specification (`feat:`, `fix:`, `docs:`, `chore:`, etc.). When I tested committing `"initial commit"`, it was rejected with:
-  ```
-  [commit-msg ERROR] Invalid commit message format: "initial commit"
-  Commit messages must follow the Conventional Commits specification:
-    <type>(<optional-scope>): <description>
-  ```
+- **`commit-msg`**: Validates commit messages against the **Conventional Commits** specification (`feat:`, `fix:`, `docs:`, `chore:`, etc.). When I tested committing `"initial commit"`, it was rejected with format guidance.
 
 ### 2. Git Cherry-Picking Workflow
 When I merged the emergency hotfix (`hotfix/latency-threshold`) into `main`, the `develop` branch was missing that bugfix. Rather than executing an untracked, broad merge of `main` into `develop`, I used `git cherry-pick`:
@@ -236,7 +257,10 @@ I created a multi-stage GitHub Actions workflow triggered on every push and PR:
 - **Conventional Commits PR validation:** Inspects PR titles to ensure compliance with SemVer conventions.
 - **Automated artifact packaging:** Prepares a clean deployment package in `dist/`.
 
-Every PR (#1 through #6) executed this pipeline and achieved green status before merge.
+Every PR (#1 through #7) executed this pipeline and achieved green status before merge.
+
+![Evidence 9: GitHub Actions CI Pipeline](screenshots/09-github-actions-ci-pipeline.png)
+*Figure 9: GitHub Actions automated CI runs showing green passes across all checks.*
 
 ### 2. Repository Governance (`.github/CODEOWNERS`)
 I defined a code ownership policy mapping repository paths to maintainer roles:
@@ -259,8 +283,45 @@ I maintained a structured `CHANGELOG.md` adhering to Keep a Changelog and SemVer
 
 ---
 
-## 8. Key Learnings & Takeaways
+## 8. Complete Git Commit Graph Topology
+
+The full commit graph confirms the clean implementation of the GitFlow topology:
+
+```
+*   4742b34 (HEAD -> main, origin/main) Merge PR #7: Individual lab submission updates
+|\  
+| * 1e667e6 docs: update documentation, report, and attribution for individual submission
+* | 953db81 Merge pull request #6: Add lab 1 report and changelog
+|\ \  
+| * | 473551c chore(sync): sync main into develop
+|/ /  
+* | d0e2dc6 Merge pull request #5: Hotfix latency average calculation
+|\ \  
+| * | 3a2bf57 fix(telemetry): guard rolling latency average against zero division and decimal jitter
+|/ /  
+* | b413e8d (tag: v1.1.0) Merge pull request #4: Release v1.1.0 to production
+|\ \  
+| | * de9b2be docs: complete comprehensive lab 1 report and changelog
+| | * ae9f247 fix(telemetry): guard rolling latency average against zero division and decimal jitter
+| |/  
+| * 2258989 Merge pull request #3 from Achindra2003/feature/incident-logger (RESOLVED)
+| |\  
+| | * 92b6139 fix(conflict): resolve merge conflict between maintenance notice and failover alert
+| |/  
+| * 9890195 Merge pull request #2 from Achindra2003/feature/alert-banner
+|/  
+* dad356f Merge pull request #1 from Achindra2003/feature/telemetry-metrics
+* 8e25a53 (tag: v1.0.0) feat: initial release of OpsPulse DevOps telemetry portal
+```
+
+![Evidence 10: GitFlow Commit Topology Graph](screenshots/10-git-graph-topology.png)
+*Figure 10: Terminal output of `git log --graph --oneline -n 15` verifying the GitFlow graph.*
+
+---
+
+## 9. Key Learnings & Takeaways
 
 1. **Agreement vs. Tool-Enforced Guarantees:** Deciding "I won't push directly to main" is easy to follow in theory, but accidental pushes happen under pressure. Applying branch protection and pre-commit hooks converts intentions into enforceable repository invariants.
 2. **True Cost of Merge Conflicts:** Merge conflicts are manageable when commits are small and atomic. When branches diverge for long periods, resolution becomes guesswork. GitFlow with short-lived branches kept the conflict isolated to five lines.
 3. **Value of Conventional Commits:** Structured commit prefixes (`feat:`, `fix:`) made generating changelogs predictable and tracing changes across branches trivial.
+4. **Cloud Deployment Integration:** Deploying to **Vercel** with GitHub integration demonstrated how Git branch merges trigger real-world continuous deployment workflows.
