@@ -79,9 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Update Average Cluster Latency
+    // Update Average Cluster Latency (Hotfix: Safe Division Guard)
     if (count > 0 && latencyVal) {
-      const avg = Math.round(totalLat / count);
+      const avg = Math.max(1, Math.round(totalLat / count));
       latencyVal.textContent = `${avg} ms`;
       if (avg > 100) {
         latencyTrend.className = 'metric-trend trend-warning';
